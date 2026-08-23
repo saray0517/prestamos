@@ -1,3 +1,5 @@
+const API_BASE_URL = 'http://localhost:3008/api';
+
 let activeLoan = null;
 
 function parseInputNumber(value) {
@@ -25,7 +27,7 @@ function showSection(sectionId) {
 function toggleEmploymentFields() {
   const employmentType = document.getElementById('employment-type').value;
   const companyFields = document.getElementById('company-fields');
-  
+
   if (employmentType === 'empresa') {
     companyFields.classList.remove('hidden');
   } else {
@@ -62,7 +64,33 @@ function calculateNextPaymentDate(startDateString, paymentsMade) {
   return date.toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' });
 }
 
-function requestLoan() {
+// Convierte la fila que devuelve MySQL (snake_case, DECIMAL como string)
+// al mismo formato que ya usa updateUI() en el frontend.
+function mapLoanFromServer(loan) {
+  const firstName = loan.first_name ?? loan.firstName;
+  const lastName = loan.last_name ?? loan.lastName;
+
+  return {
+    clientId: loan.client_id ?? loan.clientId,
+    clientName: `${firstName ?? ''} ${lastName ?? ''}`.trim(),
+    address: loan.address,
+    employmentType: loan.employment_type ?? loan.employmentType,
+    companyName: loan.company_name ?? loan.companyName,
+    jobTitle: loan.job_title ?? loan.jobTitle,
+    monthlyIncome: parseFloat(loan.monthly_income ?? loan.monthlyIncome),
+    originalAmount: parseFloat(loan.original_amount ?? loan.amount),
+    totalInstallments: loan.total_installments ?? loan.installments,
+    installmentValue: parseFloat(loan.installment_value ?? loan.installmentValue),
+    loanDate: typeof (loan.loan_date ?? loan.loanDate) === 'string'
+      ? (loan.loan_date ?? loan.loanDate).substring(0, 10)
+      : (loan.loan_date ?? loan.loanDate),
+    paymentsMade: loan.payments_made ?? loan.paymentsMade ?? 0,
+    remainingBalance: parseFloat(loan.remaining_balance ?? loan.remainingBalance ?? loan.amount),
+    isOverdue: !!(loan.is_overdue ?? loan.isOverdue)
+  };
+}
+
+async function requestLoan() {
   const clientId = document.getElementById('client-id').value.trim();
   const firstName = document.getElementById('first-name').value.trim();
   const lastName = document.getElementById('last-name').value.trim();
@@ -75,115 +103,104 @@ function requestLoan() {
   const installments = parseInt(document.getElementById('installments-count').value);
   const loanDate = document.getElementById('loan-date').value;
 
+  // Validaciones rápidas en el cliente (el backend valida de nuevo, es la fuente de verdad)
   if (!clientId || !firstName || !lastName || !address) {
     showNotification("Por favor complete todos los datos personales del cliente.");
     return;
   }
-
-  // Validación: Préstamo activo en proceso
-  if (activeLoan && activeLoan.clientId === clientId && activeLoan.remainingBalance > 0) {
-    showNotification("Solicitud denegada: El cliente registra un préstamo activo en proceso.");
-    return;
-  }
-
-  if (activeLoan && activeLoan.isOverdue) {
-    showNotification("No se puede otorgar un nuevo préstamo si registra saldo en mora.");
-    return;
-  }
-
   if (employmentType === 'empresa' && (!companyName || !jobTitle)) {
     showNotification("Por favor ingrese la empresa y el cargo del cliente.");
     return;
   }
-
   if (isNaN(monthlyIncome) || monthlyIncome <= 0) {
     showNotification("El ingreso mensual debe ser mayor a 0.");
     return;
   }
-
   if (isNaN(amount) || amount <= 0) {
     showNotification("El monto debe ser mayor a 0.");
     return;
   }
-
   if (isNaN(installments) || installments < 1 || installments > 60) {
     showNotification("El número de cuotas debe estar entre 1 y 60.");
     return;
   }
-
   if (!loanDate) {
     showNotification("Por favor seleccione la fecha del préstamo.");
     return;
   }
 
-  const installmentValue = amount / installments;
-
-  if (installmentValue > monthlyIncome) {
-    showNotification("No se pudo realizar el préstamo: la cuota mensual excede sus ingresos.");
-    return;
-  }
-
-  activeLoan = {
-    clientId: clientId,
-    clientName: `${firstName} ${lastName}`,
-    address: address,
-    employmentType: employmentType,
-    companyName: companyName,
-    jobTitle: jobTitle,
-    monthlyIncome: monthlyIncome,
-    originalAmount: amount,
-    totalInstallments: installments,
-    installmentValue: installmentValue,
-    loanDate: loanDate,
-    paymentsMade: 0,
-    remainingBalance: amount,
-    isOverdue: false
+  const payload = {
+    clientId, firstName, lastName, address, employmentType,
+    companyName: employmentType === 'empresa' ? companyName : null,
+    jobTitle: employmentType === 'empresa' ? jobTitle : null,
+    monthlyIncome, amount, installments, loanDate
   };
 
-  updateUI();
-  showSection('details-section');
-  showNotification("¡Préstamo registrado exitosamente!", false);
+  try {
+    const response = await fetch(`${API_BASE_URL}/loans`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      showNotification(data.error || "No se pudo registrar el préstamo.");
+      return;
+    }
+
+    activeLoan = mapLoanFromServer(data);
+    updateUI();
+    showSection('details-section');
+    showNotification("¡Préstamo registrado exitosamente!", false);
+  } catch (err) {
+    showNotification("No se pudo conectar con el servidor. Verifique que el backend esté corriendo.");
+  }
 }
 
-function processPayment() {
+async function processPayment() {
   const paymentClientId = document.getElementById('payment-client-id').value.trim();
-
-  if (!activeLoan) {
-    showNotification("No hay ningún préstamo activo en el sistema.");
-    return;
-  }
-
-  if (paymentClientId !== activeLoan.clientId) {
-    showNotification("La cédula no coincide con el cliente del préstamo activo.");
-    return;
-  }
-
-  if (activeLoan.remainingBalance === 0) {
-    showNotification("El préstamo ya se encuentra completamente pagado.");
-    return;
-  }
-
   const paymentAmountRaw = document.getElementById('payment-amount').value;
   const paymentAmount = parseInputNumber(paymentAmountRaw);
   const isPaymentOverdue = document.getElementById('overdue-checkbox').checked;
 
+  if (!paymentClientId) {
+    showNotification("Ingrese la cédula del cliente.");
+    return;
+  }
   if (isNaN(paymentAmount) || paymentAmount <= 0) {
     showNotification("Ingrese un valor de pago válido.");
     return;
   }
 
-  if (paymentAmount > activeLoan.remainingBalance) {
-    showNotification("El pago no puede ser superior al saldo pendiente.");
-    return;
+  const payload = {
+    clientId: paymentClientId,
+    amount: paymentAmount,
+    isOverdue: isPaymentOverdue
+  };
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/pay`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      showNotification(data.error || "No se pudo registrar el pago.");
+      return;
+    }
+
+    activeLoan = mapLoanFromServer(data);
+    updateUI();
+    showSection('details-section');
+    showNotification("Pago registrado correctamente.", false);
+  } catch (err) {
+    showNotification("No se pudo conectar con el servidor. Verifique que el backend esté corriendo.");
   }
-
-  activeLoan.remainingBalance -= paymentAmount;
-  activeLoan.paymentsMade += 1;
-  activeLoan.isOverdue = isPaymentOverdue && activeLoan.remainingBalance > 0;
-
-  updateUI();
-  showSection('details-section');
-  showNotification("Pago registrado correctamente.", false);
 }
 
 function updateUI() {
@@ -192,7 +209,7 @@ function updateUI() {
   document.getElementById('display-client-name').innerText = activeLoan.clientName;
   document.getElementById('display-client-id').innerText = activeLoan.clientId;
   document.getElementById('display-employment-type').innerText = activeLoan.employmentType === 'empresa' ? 'Empleado (Empresa)' : 'Independiente';
-  
+
   const companyWrapper = document.getElementById('display-company-wrapper');
   if (activeLoan.employmentType === 'empresa') {
     companyWrapper.classList.remove('hidden');
