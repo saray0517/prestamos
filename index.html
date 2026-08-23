@@ -3,16 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema de Préstamos - Pascual Bravo</title>
+  <title>Sistema de Préstamos - B y S</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <div class="loan-container">
-  <h1 class="main-title">Sistema de préstamos</h1>
+  <h1 class="main-title">Sistema de préstamos B y S</h1>
 
-  <div class="form-section">
-    <h3>1. Datos del Cliente y Solicitud</h3>
+  <!-- Welcome Screen -->
+  <div id="welcome-screen" class="form-section center-content">
+    <h2>Bienvenido a nuestro sistema de préstamos B y S</h2>
+    <div class="menu-buttons">
+      <button class="action-button" onclick="showSection('request-section')">Solicitar préstamo</button>
+      <button class="action-button secondary-color" onclick="showSection('payment-section')">Abonar / Pagar</button>
+    </div>
+  </div>
+
+  <!-- Loan Request Section -->
+  <div id="request-section" class="form-section hidden">
+    <div class="section-header">
+      <h3>1. Datos del Cliente y Solicitud</h3>
+      <button class="text-button" onclick="resetRequestForm()">Limpiar Campos</button>
+    </div>
     
     <div class="grid-form">
       <div>
@@ -42,9 +55,13 @@
     <label class="form-label" for="installments-count">Número de Cuotas (1 a 60):</label>
     <input type="number" id="installments-count" class="form-input" min="1" max="60" placeholder="Ej: 24">
 
-    <button class="action-button" onclick="requestLoan()">Solicitar Préstamo</button>
+    <div class="button-group">
+      <button class="action-button" onclick="requestLoan()">Procesar Préstamo</button>
+      <button class="back-button" onclick="showSection('welcome-screen')">Volver al inicio</button>
+    </div>
   </div>
 
+  <!-- Active Loan Details Section -->
   <div id="details-section" class="form-section hidden">
     <h3>Detalles del Préstamo Activo</h3>
     <div class="status-card">
@@ -56,9 +73,15 @@
       <p><strong>Saldo Pendiente:</strong> $<span id="display-remaining-balance">0</span></p>
       <p><strong>En Mora:</strong> <span id="display-overdue-status">No</span></p>
     </div>
+    
+    <div class="button-group margin-top">
+      <button class="action-button secondary-color" onclick="showSection('payment-section')">Ir a Pagar</button>
+      <button class="back-button" onclick="showSection('welcome-screen')">Volver al inicio</button>
+    </div>
   </div>
 
-  <div class="form-section">
+  <!-- Payment Registration Section -->
+  <div id="payment-section" class="form-section hidden">
     <h3>2. Registrar Pago</h3>
     <label class="form-label" for="payment-client-id">Cédula del Cliente:</label>
     <input type="text" id="payment-client-id" class="form-input" placeholder="Ingrese cédula para pagar">
@@ -70,7 +93,10 @@
       <input type="checkbox" id="overdue-checkbox"> ¿Simular pago fuera de fecha (Mora)?
     </label>
 
-    <button class="action-button" onclick="processPayment()">Abonar / Pagar</button>
+    <div class="button-group">
+      <button class="action-button" onclick="processPayment()">Abonar / Pagar</button>
+      <button class="back-button" onclick="showSection('welcome-screen')">Volver al inicio</button>
+    </div>
   </div>
 
   <p id="system-message"></p>

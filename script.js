@@ -12,6 +12,27 @@ function showNotification(text, isError = true) {
   messageElement.className = isError ? 'message-error' : 'message-success';
 }
 
+function showSection(sectionId) {
+  document.getElementById('welcome-screen').classList.add('hidden');
+  document.getElementById('request-section').classList.add('hidden');
+  document.getElementById('details-section').classList.add('hidden');
+  document.getElementById('payment-section').classList.add('hidden');
+
+  document.getElementById(sectionId).classList.remove('hidden');
+  showNotification('');
+}
+
+function resetRequestForm() {
+  document.getElementById('client-id').value = '';
+  document.getElementById('first-name').value = '';
+  document.getElementById('last-name').value = '';
+  document.getElementById('address').value = '';
+  document.getElementById('monthly-income').value = '';
+  document.getElementById('requested-amount').value = '';
+  document.getElementById('installments-count').value = '';
+  showNotification('Formulario listo para registrar un nuevo préstamo.', false);
+}
+
 function requestLoan() {
   const clientId = document.getElementById('client-id').value.trim();
   const firstName = document.getElementById('first-name').value.trim();
@@ -66,7 +87,7 @@ function requestLoan() {
   };
 
   updateUI();
-  document.getElementById('details-section').classList.remove('hidden');
+  showSection('details-section');
   showNotification("¡Préstamo registrado exitosamente!", false);
 }
 
@@ -106,6 +127,7 @@ function processPayment() {
   activeLoan.isOverdue = isPaymentOverdue && activeLoan.remainingBalance > 0;
 
   updateUI();
+  showSection('details-section');
   showNotification("Pago registrado correctamente.", false);
 }
 

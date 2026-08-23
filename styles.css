@@ -31,6 +31,17 @@ body {
   margin-bottom: 15px; 
 }
 
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.center-content {
+  text-align: center;
+  padding: 20px 0;
+}
+
 .grid-form {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -62,13 +73,25 @@ body {
   border-radius: 4px; 
 }
 
+.menu-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
 .action-button { 
   width: 100%; 
   background: #005691; 
   color: #ffffff; 
   border: none; 
-  padding: 10px; 
-  margin-top: 15px; 
+  padding: 12px; 
   font-size: 16px; 
   border-radius: 4px; 
   cursor: pointer; 
@@ -78,11 +101,47 @@ body {
   background: #003d66; 
 }
 
+.secondary-color {
+  background: #28a745;
+}
+
+.secondary-color:hover {
+  background: #218838;
+}
+
+.back-button {
+  width: 100%;
+  background: #6c757d;
+  color: #ffffff;
+  border: none;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.back-button:hover {
+  background: #5a6268;
+}
+
+.text-button {
+  background: none;
+  border: none;
+  color: #005691;
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: bold;
+}
+
 .status-card { 
   background: #eef7fc; 
   padding: 15px; 
   border-radius: 6px; 
   margin-top: 10px; 
+}
+
+.margin-top {
+  margin-top: 15px;
 }
 
 .message-error { 
