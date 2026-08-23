@@ -12,17 +12,24 @@ body {
 
 .loan-container { 
   background: #ffffff; 
-  padding: 25px; 
-  border-radius: 8px; 
+  padding: 30px; 
+  border-radius: 16px; 
   width: 100%; 
   max-width: 600px; 
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08); 
 }
 
 .main-title { 
   color: #005691; 
   text-align: center; 
   margin-bottom: 20px; 
+}
+
+.subtitle-text {
+  color: #6c757d;
+  font-size: 15px;
+  margin-top: 5px;
+  margin-bottom: 20px;
 }
 
 .form-section { 
@@ -45,7 +52,7 @@ body {
 .grid-form {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  gap: 12px;
 }
 
 .hidden {
@@ -61,16 +68,22 @@ body {
 .checkbox-label {
   display: block;
   font-weight: normal; 
-  margin-top: 10px;
+  margin-top: 12px;
   cursor: pointer;
 }
 
 .form-input { 
   width: 100%; 
-  padding: 8px; 
+  padding: 10px 12px; 
   margin-top: 5px; 
   border: 1px solid #cccccc; 
-  border-radius: 4px; 
+  border-radius: 10px; 
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.form-input:focus {
+  border-color: #005691;
 }
 
 .menu-buttons {
@@ -83,7 +96,7 @@ body {
 .button-group {
   display: flex;
   gap: 10px;
-  margin-top: 15px;
+  margin-top: 18px;
 }
 
 .action-button { 
@@ -93,8 +106,9 @@ body {
   border: none; 
   padding: 12px; 
   font-size: 16px; 
-  border-radius: 4px; 
+  border-radius: 12px; 
   cursor: pointer; 
+  transition: background 0.2s ease;
 }
 
 .action-button:hover { 
@@ -116,8 +130,9 @@ body {
   border: none;
   padding: 12px;
   font-size: 16px;
-  border-radius: 4px;
+  border-radius: 12px; 
   cursor: pointer;
+  transition: background 0.2s ease;
 }
 
 .back-button:hover {
@@ -135,9 +150,9 @@ body {
 
 .status-card { 
   background: #eef7fc; 
-  padding: 15px; 
-  border-radius: 6px; 
-  margin-top: 10px; 
+  padding: 18px; 
+  border-radius: 14px; 
+  margin-top: 12px; 
 }
 
 .margin-top {
@@ -147,11 +162,11 @@ body {
 .message-error { 
   color: #d9534f; 
   font-weight: bold; 
-  margin-top: 10px; 
+  margin-top: 12px; 
 }
 
 .message-success { 
   color: #5cb85c; 
   font-weight: bold; 
-  margin-top: 10px; 
+  margin-top: 12px; 
 }

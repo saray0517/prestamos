@@ -3,17 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema de Préstamos - B y S</title>
+  <title>Sistema de Préstamos</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <div class="loan-container">
-  <h1 class="main-title">Sistema de préstamos B y S</h1>
+  <h1 class="main-title">Sistema de préstamos</h1>
 
   <!-- Welcome Screen -->
   <div id="welcome-screen" class="form-section center-content">
-    <h2>Bienvenido a nuestro sistema de préstamos B y S</h2>
+    <h2>Bienvenidos a nuestro sistema de préstamos</h2>
+    <p class="subtitle-text">Estamos aquí para ayudarte</p>
     <div class="menu-buttons">
       <button class="action-button" onclick="showSection('request-section')">Solicitar préstamo</button>
       <button class="action-button secondary-color" onclick="showSection('payment-section')">Abonar / Pagar</button>
@@ -52,8 +53,16 @@
     <label class="form-label" for="requested-amount">Monto Solicitado ($):</label>
     <input type="text" id="requested-amount" class="form-input" placeholder="Ej: 10.000.000">
 
-    <label class="form-label" for="installments-count">Número de Cuotas (1 a 60):</label>
-    <input type="number" id="installments-count" class="form-input" min="1" max="60" placeholder="Ej: 24">
+    <div class="grid-form">
+      <div>
+        <label class="form-label" for="installments-count">Cuotas (1 a 60):</label>
+        <input type="number" id="installments-count" class="form-input" min="1" max="60" placeholder="Ej: 24">
+      </div>
+      <div>
+        <label class="form-label" for="payment-day">Día de pago del mes:</label>
+        <input type="number" id="payment-day" class="form-input" min="1" max="31" placeholder="Ej: 15">
+      </div>
+    </div>
 
     <div class="button-group">
       <button class="action-button" onclick="requestLoan()">Procesar Préstamo</button>
@@ -70,6 +79,7 @@
       <p><strong>Monto Solicitado:</strong> $<span id="display-amount">0</span></p>
       <p><strong>Cuotas:</strong> <span id="display-installments">0</span></p>
       <p><strong>Valor por Cuota:</strong> $<span id="display-installment-value">0</span></p>
+      <p><strong>Día de Pago:</strong> Día <span id="display-payment-day">-</span> de cada mes</p>
       <p><strong>Saldo Pendiente:</strong> $<span id="display-remaining-balance">0</span></p>
       <p><strong>En Mora:</strong> <span id="display-overdue-status">No</span></p>
     </div>
