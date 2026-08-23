@@ -30,6 +30,7 @@ function resetRequestForm() {
   document.getElementById('monthly-income').value = '';
   document.getElementById('requested-amount').value = '';
   document.getElementById('installments-count').value = '';
+  document.getElementById('payment-day').value = '';
   showNotification('Formulario listo para registrar un nuevo préstamo.', false);
 }
 
@@ -41,6 +42,7 @@ function requestLoan() {
   const monthlyIncome = parseInputNumber(document.getElementById('monthly-income').value);
   const amount = parseInputNumber(document.getElementById('requested-amount').value);
   const installments = parseInt(document.getElementById('installments-count').value);
+  const paymentDay = parseInt(document.getElementById('payment-day').value);
 
   if (!clientId || !firstName || !lastName || !address) {
     showNotification("Por favor complete todos los datos personales del cliente.");
@@ -67,6 +69,11 @@ function requestLoan() {
     return;
   }
 
+  if (isNaN(paymentDay) || paymentDay < 1 || paymentDay > 31) {
+    showNotification("Ingrese un día de pago válido del mes (1 al 31).");
+    return;
+  }
+
   const installmentValue = amount / installments;
 
   if (installmentValue > monthlyIncome) {
@@ -82,6 +89,7 @@ function requestLoan() {
     originalAmount: amount,
     totalInstallments: installments,
     installmentValue: installmentValue,
+    paymentDay: paymentDay,
     remainingBalance: amount,
     isOverdue: false
   };
@@ -139,6 +147,7 @@ function updateUI() {
   document.getElementById('display-amount').innerText = activeLoan.originalAmount.toLocaleString('es-CO');
   document.getElementById('display-installments').innerText = activeLoan.totalInstallments;
   document.getElementById('display-installment-value').innerText = activeLoan.installmentValue.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  document.getElementById('display-payment-day').innerText = activeLoan.paymentDay;
   document.getElementById('display-remaining-balance').innerText = activeLoan.remainingBalance.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   document.getElementById('display-overdue-status').innerText = activeLoan.isOverdue ? "SÍ" : "No";
 }
