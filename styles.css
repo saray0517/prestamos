@@ -31,14 +31,14 @@ body {
   margin-bottom: 15px; 
 }
 
-.hidden {
-  display: none;
+.grid-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
 }
 
-.navigation-buttons {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
+.hidden {
+  display: none;
 }
 
 .form-label { 
@@ -68,7 +68,7 @@ body {
   color: #ffffff; 
   border: none; 
   padding: 10px; 
-  margin-top: 12px; 
+  margin-top: 15px; 
   font-size: 16px; 
   border-radius: 4px; 
   cursor: pointer; 
@@ -78,24 +78,9 @@ body {
   background: #003d66; 
 }
 
-.secondary-button {
-  flex: 1;
-  background: #6c757d;
-  color: #ffffff;
-  border: none;
-  padding: 10px;
-  font-size: 14px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.secondary-button:hover {
-  background: #5a6268;
-}
-
 .status-card { 
   background: #eef7fc; 
-  padding: 12px; 
+  padding: 15px; 
   border-radius: 6px; 
   margin-top: 10px; 
 }

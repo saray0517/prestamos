@@ -12,24 +12,44 @@
   <h1 class="main-title">Sistema de préstamos</h1>
 
   <div class="form-section">
-    <h3>1. Registrar Solicitud de Préstamo</h3>
+    <h3>1. Datos del Cliente y Solicitud</h3>
+    
+    <div class="grid-form">
+      <div>
+        <label class="form-label" for="client-id">Cédula:</label>
+        <input type="text" id="client-id" class="form-input" placeholder="Ej: 10203040">
+      </div>
+      <div>
+        <label class="form-label" for="first-name">Nombre:</label>
+        <input type="text" id="first-name" class="form-input" placeholder="Ej: Saray">
+      </div>
+      <div>
+        <label class="form-label" for="last-name">Apellido:</label>
+        <input type="text" id="last-name" class="form-input" placeholder="Ej: Muñoz">
+      </div>
+      <div>
+        <label class="form-label" for="address">Dirección:</label>
+        <input type="text" id="address" class="form-input" placeholder="Ej: Calle 10 #20-30">
+      </div>
+    </div>
+
+    <label class="form-label" for="monthly-income">Ingreso Mensual ($):</label>
+    <input type="text" id="monthly-income" class="form-input" placeholder="Ej: 2.000.000">
+
     <label class="form-label" for="requested-amount">Monto Solicitado ($):</label>
-    <input type="text" id="requested-amount" class="form-input" placeholder="Ej: 580.000 o 1.000.000">
+    <input type="text" id="requested-amount" class="form-input" placeholder="Ej: 10.000.000">
 
     <label class="form-label" for="installments-count">Número de Cuotas (1 a 60):</label>
-    <input type="number" id="installments-count" class="form-input" min="1" max="60" placeholder="Ej: 12">
+    <input type="number" id="installments-count" class="form-input" min="1" max="60" placeholder="Ej: 24">
 
     <button class="action-button" onclick="requestLoan()">Solicitar Préstamo</button>
-  </div>
-
-  <div class="navigation-buttons">
-    <button class="secondary-button" onclick="toggleDetails()">Ver detalles</button>
-    <button class="secondary-button" onclick="togglePaymentSection()">Registrar pago</button>
   </div>
 
   <div id="details-section" class="form-section hidden">
     <h3>Detalles del Préstamo Activo</h3>
     <div class="status-card">
+      <p><strong>Cliente:</strong> <span id="display-client-name"></span></p>
+      <p><strong>Cédula:</strong> <span id="display-client-id"></span></p>
       <p><strong>Monto Solicitado:</strong> $<span id="display-amount">0</span></p>
       <p><strong>Cuotas:</strong> <span id="display-installments">0</span></p>
       <p><strong>Valor por Cuota:</strong> $<span id="display-installment-value">0</span></p>
@@ -38,10 +58,13 @@
     </div>
   </div>
 
-  <div id="payment-section" class="form-section hidden">
+  <div class="form-section">
     <h3>2. Registrar Pago</h3>
+    <label class="form-label" for="payment-client-id">Cédula del Cliente:</label>
+    <input type="text" id="payment-client-id" class="form-input" placeholder="Ingrese cédula para pagar">
+
     <label class="form-label" for="payment-amount">Monto a Pagar ($):</label>
-    <input type="text" id="payment-amount" class="form-input" placeholder="Ej: 50.000">
+    <input type="text" id="payment-amount" class="form-input" placeholder="Ej: 500.000">
     
     <label class="checkbox-label">
       <input type="checkbox" id="overdue-checkbox"> ¿Simular pago fuera de fecha (Mora)?

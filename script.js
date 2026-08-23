@@ -12,23 +12,27 @@ function showNotification(text, isError = true) {
   messageElement.className = isError ? 'message-error' : 'message-success';
 }
 
-function toggleDetails() {
-  const detailsSection = document.getElementById('details-section');
-  detailsSection.classList.toggle('hidden');
-}
-
-function togglePaymentSection() {
-  const paymentSection = document.getElementById('payment-section');
-  paymentSection.classList.toggle('hidden');
-}
-
 function requestLoan() {
-  const amountRaw = document.getElementById('requested-amount').value;
-  const amount = parseInputNumber(amountRaw);
+  const clientId = document.getElementById('client-id').value.trim();
+  const firstName = document.getElementById('first-name').value.trim();
+  const lastName = document.getElementById('last-name').value.trim();
+  const address = document.getElementById('address').value.trim();
+  const monthlyIncome = parseInputNumber(document.getElementById('monthly-income').value);
+  const amount = parseInputNumber(document.getElementById('requested-amount').value);
   const installments = parseInt(document.getElementById('installments-count').value);
+
+  if (!clientId || !firstName || !lastName || !address) {
+    showNotification("Por favor complete todos los datos personales del cliente.");
+    return;
+  }
 
   if (activeLoan && activeLoan.isOverdue) {
     showNotification("No se puede otorgar un nuevo préstamo si registra saldo en mora.");
+    return;
+  }
+
+  if (isNaN(monthlyIncome) || monthlyIncome <= 0) {
+    showNotification("El ingreso mensual debe ser mayor a 0.");
     return;
   }
 
@@ -44,7 +48,16 @@ function requestLoan() {
 
   const installmentValue = amount / installments;
 
+  if (installmentValue > monthlyIncome) {
+    showNotification("No se pudo realizar el préstamo: la cuota mensual excede sus ingresos.");
+    return;
+  }
+
   activeLoan = {
+    clientId: clientId,
+    clientName: `${firstName} ${lastName}`,
+    address: address,
+    monthlyIncome: monthlyIncome,
     originalAmount: amount,
     totalInstallments: installments,
     installmentValue: installmentValue,
@@ -53,12 +66,25 @@ function requestLoan() {
   };
 
   updateUI();
+  document.getElementById('details-section').classList.remove('hidden');
   showNotification("¡Préstamo registrado exitosamente!", false);
 }
 
 function processPayment() {
-  if (!activeLoan || activeLoan.remainingBalance === 0) {
-    showNotification("No hay ningún préstamo activo con saldo pendiente.");
+  const paymentClientId = document.getElementById('payment-client-id').value.trim();
+
+  if (!activeLoan) {
+    showNotification("No hay ningún préstamo activo en el sistema.");
+    return;
+  }
+
+  if (paymentClientId !== activeLoan.clientId) {
+    showNotification("La cédula no coincide con el cliente del préstamo activo.");
+    return;
+  }
+
+  if (activeLoan.remainingBalance === 0) {
+    showNotification("El préstamo ya se encuentra completamente pagado.");
     return;
   }
 
@@ -86,6 +112,8 @@ function processPayment() {
 function updateUI() {
   if (!activeLoan) return;
 
+  document.getElementById('display-client-name').innerText = activeLoan.clientName;
+  document.getElementById('display-client-id').innerText = activeLoan.clientId;
   document.getElementById('display-amount').innerText = activeLoan.originalAmount.toLocaleString('es-CO');
   document.getElementById('display-installments').innerText = activeLoan.totalInstallments;
   document.getElementById('display-installment-value').innerText = activeLoan.installmentValue.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
