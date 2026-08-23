@@ -3,14 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema de Préstamos B y S</title>
+  <title>Sistema de Préstamos B I S</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <div class="loan-container">
   <h1 class="main-title">Sistema de préstamos B I S</h1>
- <div id="welcome-screen" class="form-section center-content">
+
+
+  <div id="welcome-screen" class="form-section center-content">
     <h2>Bienvenidos a nuestro sistema de préstamos</h2>
     <p class="subtitle-text">Estamos aquí para ayudarte</p>
     <div class="menu-buttons">
@@ -18,6 +20,7 @@
       <button class="action-button secondary-color" onclick="showSection('payment-section')">Abonar / Pagar</button>
     </div>
   </div>
+
 
   <div id="request-section" class="form-section hidden">
     <div class="section-header">
@@ -44,6 +47,23 @@
       </div>
     </div>
 
+    <label class="form-label" for="employment-type">Tipo de Empleo:</label>
+    <select id="employment-type" class="form-input" onchange="toggleEmploymentFields()">
+      <option value="independiente">Independiente</option>
+      <option value="empresa">Empresa</option>
+    </select>
+
+    <div id="company-fields" class="grid-form hidden">
+      <div>
+        <label class="form-label" for="company-name">Empresa:</label>
+        <input type="text" id="company-name" class="form-input" placeholder="Ej: BANCOLOMBIA">
+      </div>
+      <div>
+        <label class="form-label" for="job-title">Cargo:</label>
+        <input type="text" id="job-title" class="form-input" placeholder="Ej: Analista de Crédito">
+      </div>
+    </div>
+
     <label class="form-label" for="monthly-income">Ingreso Mensual ($):</label>
     <input type="text" id="monthly-income" class="form-input" placeholder="Ej: 2.000.000">
 
@@ -67,12 +87,13 @@
     </div>
   </div>
 
-
   <div id="details-section" class="form-section hidden">
     <h3>Detalles del Préstamo Activo</h3>
     <div class="status-card">
       <p><strong>Cliente:</strong> <span id="display-client-name"></span></p>
       <p><strong>Cédula:</strong> <span id="display-client-id"></span></p>
+      <p><strong>Tipo de Empleo:</strong> <span id="display-employment-type"></span></p>
+      <p id="display-company-wrapper" class="hidden"><strong>Empresa / Cargo:</strong> <span id="display-company-info"></span></p>
       <p><strong>Monto Solicitado:</strong> $<span id="display-amount">0</span></p>
       <p><strong>Cuotas:</strong> <span id="display-installments">0</span></p>
       <p><strong>Valor por Cuota:</strong> $<span id="display-installment-value">0</span></p>
@@ -88,6 +109,7 @@
       <button class="back-button" onclick="showSection('welcome-screen')">Volver al inicio</button>
     </div>
   </div>
+
 
   <div id="payment-section" class="form-section hidden">
     <h3>2. Registrar Pago</h3>

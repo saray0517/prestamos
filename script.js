@@ -22,11 +22,26 @@ function showSection(sectionId) {
   showNotification('');
 }
 
+function toggleEmploymentFields() {
+  const employmentType = document.getElementById('employment-type').value;
+  const companyFields = document.getElementById('company-fields');
+  
+  if (employmentType === 'empresa') {
+    companyFields.classList.remove('hidden');
+  } else {
+    companyFields.classList.add('hidden');
+    document.getElementById('company-name').value = '';
+    document.getElementById('job-title').value = '';
+  }
+}
+
 function resetRequestForm() {
   document.getElementById('client-id').value = '';
   document.getElementById('first-name').value = '';
   document.getElementById('last-name').value = '';
   document.getElementById('address').value = '';
+  document.getElementById('employment-type').value = 'independiente';
+  toggleEmploymentFields();
   document.getElementById('monthly-income').value = '';
   document.getElementById('requested-amount').value = '';
   document.getElementById('installments-count').value = '';
@@ -52,6 +67,9 @@ function requestLoan() {
   const firstName = document.getElementById('first-name').value.trim();
   const lastName = document.getElementById('last-name').value.trim();
   const address = document.getElementById('address').value.trim();
+  const employmentType = document.getElementById('employment-type').value;
+  const companyName = document.getElementById('company-name').value.trim();
+  const jobTitle = document.getElementById('job-title').value.trim();
   const monthlyIncome = parseInputNumber(document.getElementById('monthly-income').value);
   const amount = parseInputNumber(document.getElementById('requested-amount').value);
   const installments = parseInt(document.getElementById('installments-count').value);
@@ -62,8 +80,19 @@ function requestLoan() {
     return;
   }
 
+  // Validación: Préstamo activo en proceso
+  if (activeLoan && activeLoan.clientId === clientId && activeLoan.remainingBalance > 0) {
+    showNotification("Solicitud denegada: El cliente registra un préstamo activo en proceso.");
+    return;
+  }
+
   if (activeLoan && activeLoan.isOverdue) {
     showNotification("No se puede otorgar un nuevo préstamo si registra saldo en mora.");
+    return;
+  }
+
+  if (employmentType === 'empresa' && (!companyName || !jobTitle)) {
+    showNotification("Por favor ingrese la empresa y el cargo del cliente.");
     return;
   }
 
@@ -98,6 +127,9 @@ function requestLoan() {
     clientId: clientId,
     clientName: `${firstName} ${lastName}`,
     address: address,
+    employmentType: employmentType,
+    companyName: companyName,
+    jobTitle: jobTitle,
     monthlyIncome: monthlyIncome,
     originalAmount: amount,
     totalInstallments: installments,
@@ -159,6 +191,16 @@ function updateUI() {
 
   document.getElementById('display-client-name').innerText = activeLoan.clientName;
   document.getElementById('display-client-id').innerText = activeLoan.clientId;
+  document.getElementById('display-employment-type').innerText = activeLoan.employmentType === 'empresa' ? 'Empleado (Empresa)' : 'Independiente';
+  
+  const companyWrapper = document.getElementById('display-company-wrapper');
+  if (activeLoan.employmentType === 'empresa') {
+    companyWrapper.classList.remove('hidden');
+    document.getElementById('display-company-info').innerText = `${activeLoan.companyName} - ${activeLoan.jobTitle}`;
+  } else {
+    companyWrapper.classList.add('hidden');
+  }
+
   document.getElementById('display-amount').innerText = activeLoan.originalAmount.toLocaleString('es-CO');
   document.getElementById('display-installments').innerText = activeLoan.totalInstallments;
   document.getElementById('display-installment-value').innerText = activeLoan.installmentValue.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
