@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prestamos B y S </title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="loan-container">
+  <h1 class="main-title">Sistema de préstamos</h1>
+
+  <!-- Loan Application Section -->
+  <div class="form-section">
+    <h3>1. Registrar Solicitud de Préstamo</h3>
+    <label class="form-label" for="requested-amount">Monto Solicitado ($):</label>
+    <input type="number" id="requested-amount" class="form-input" placeholder="Ej: 1000000">
+
+    <label class="form-label" for="installments-count">Número de Cuotas (1 a 60):</label>
+    <input type="number" id="installments-count" class="form-input" min="1" max="60" placeholder="Ej: 12">
+
+    <button class="action-button" onclick="requestLoan()">Solicitar Préstamo</button>
+  </div>
+
+  <!-- Active Loan Status Section -->
+  <div class="form-section">
+    <h3>Detalles del Préstamo Activo</h3>
+    <div class="status-card">
+      <p><strong>Monto Solicitado:</strong> $<span id="display-amount">0</span></p>
+      <p><strong>Cuotas:</strong> <span id="display-installments">0</span></p>
+      <p><strong>Valor por Cuota:</strong> $<span id="display-installment-value">0</span></p>
+      <p><strong>Saldo Pendiente:</strong> $<span id="display-remaining-balance">0</span></p>
+      <p><strong>En Mora:</strong> <span id="display-overdue-status">No</span></p>
+    </div>
+  </div>
+
+  <!-- Payment Registration Section -->
+  <div class="form-section">
+    <h3>2. Registrar Pago</h3>
+    <label class="form-label" for="payment-amount">Monto a Pagar ($):</label>
+    <input type="number" id="payment-amount" class="form-input" placeholder="Monto del pago">
+    
+    <label class="checkbox-label">
+      <input type="checkbox" id="overdue-checkbox"> ¿Simular pago fuera de fecha (Mora)?
+    </label>
+
+    <button class="action-button" onclick="processPayment()">Abonar / Pagar</button>
+  </div>
+
+  <p id="system-message"></p>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
