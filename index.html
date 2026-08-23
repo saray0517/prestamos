@@ -3,16 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema de Préstamos</title>
+  <title>Sistema de Préstamos B y S</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <div class="loan-container">
-  <h1 class="main-title">Sistema de préstamos</h1>
-
-  <!-- Welcome Screen -->
-  <div id="welcome-screen" class="form-section center-content">
+  <h1 class="main-title">Sistema de préstamos B I S</h1>
+ <div id="welcome-screen" class="form-section center-content">
     <h2>Bienvenidos a nuestro sistema de préstamos</h2>
     <p class="subtitle-text">Estamos aquí para ayudarte</p>
     <div class="menu-buttons">
@@ -21,7 +19,6 @@
     </div>
   </div>
 
-  <!-- Loan Request Section -->
   <div id="request-section" class="form-section hidden">
     <div class="section-header">
       <h3>1. Datos del Cliente y Solicitud</h3>
@@ -59,8 +56,8 @@
         <input type="number" id="installments-count" class="form-input" min="1" max="60" placeholder="Ej: 24">
       </div>
       <div>
-        <label class="form-label" for="payment-day">Día de pago del mes:</label>
-        <input type="number" id="payment-day" class="form-input" min="1" max="31" placeholder="Ej: 15">
+        <label class="form-label" for="loan-date">Fecha del Préstamo:</label>
+        <input type="date" id="loan-date" class="form-input">
       </div>
     </div>
 
@@ -70,7 +67,7 @@
     </div>
   </div>
 
-  <!-- Active Loan Details Section -->
+
   <div id="details-section" class="form-section hidden">
     <h3>Detalles del Préstamo Activo</h3>
     <div class="status-card">
@@ -79,18 +76,19 @@
       <p><strong>Monto Solicitado:</strong> $<span id="display-amount">0</span></p>
       <p><strong>Cuotas:</strong> <span id="display-installments">0</span></p>
       <p><strong>Valor por Cuota:</strong> $<span id="display-installment-value">0</span></p>
-      <p><strong>Día de Pago:</strong> Día <span id="display-payment-day">-</span> de cada mes</p>
+      <p><strong>Fecha del Préstamo:</strong> <span id="display-loan-date">-</span></p>
+      <p><strong>Próximo Cobro:</strong> <span id="display-next-payment-date">-</span></p>
+      <p><strong>Abonos Realizados:</strong> <span id="display-payments-count">0</span></p>
       <p><strong>Saldo Pendiente:</strong> $<span id="display-remaining-balance">0</span></p>
       <p><strong>En Mora:</strong> <span id="display-overdue-status">No</span></p>
     </div>
     
     <div class="button-group margin-top">
-      <button class="action-button secondary-color" onclick="showSection('payment-section')">Ir a Pagar</button>
+      <button class="action-button print-btn" onclick="window.print()">Imprimir recibo</button>
       <button class="back-button" onclick="showSection('welcome-screen')">Volver al inicio</button>
     </div>
   </div>
 
-  <!-- Payment Registration Section -->
   <div id="payment-section" class="form-section hidden">
     <h3>2. Registrar Pago</h3>
     <label class="form-label" for="payment-client-id">Cédula del Cliente:</label>

@@ -123,6 +123,14 @@ body {
   background: #218838;
 }
 
+.print-btn {
+  background: #17a2b8;
+}
+
+.print-btn:hover {
+  background: #138496;
+}
+
 .back-button {
   width: 100%;
   background: #6c757d;
